@@ -1,6 +1,5 @@
 package com.jibee.gym.adapter
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,7 +16,7 @@ import kotlinx.android.synthetic.main.gym_item.view.*
 
 class GymPAdapter(
     private var clickListener: OnItemClickedListener,
-    private val context: Context
+    private val favouriteList: ArrayList<String>
 ) :
     PagingDataAdapter<Gym, GymPAdapter.GymViewHolder>(DiffUtilCallBack()) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GymViewHolder {
@@ -27,7 +26,7 @@ class GymPAdapter(
 
     override fun onBindViewHolder(holder: GymViewHolder, position: Int) {
         getItem(position)?.let {
-            holder.bindPost(it, clickListener)
+            holder.bindPost(it, clickListener, favouriteList)
         }
     }
 
@@ -39,7 +38,13 @@ class GymPAdapter(
         private val _gymImage: ImageView = itemView.gym_image
         private val _favourite: ImageButton = itemView.favourite
 
-        fun bindPost(gym: Gym, clickListener: OnItemClickedListener) {
+        var isFavourite = false
+
+        fun bindPost(
+            gym: Gym,
+            clickListener: OnItemClickedListener,
+            favouriteList: ArrayList<String>
+        ) {
             with(gym) {
 
                 _title.text = title
@@ -53,32 +58,30 @@ class GymPAdapter(
                     "Gym NonStop" -> _gymImage.setImageResource(R.drawable.gym_non_stop)
                 }
 
-                //check if its favourite or not
-                if (favorite)
+                //check if its favourite or not,
+                if (title in favouriteList) {
                     _favourite.setImageResource(R.drawable.ic_favorite_selected)
-                else
-                    _favourite.setImageResource(R.drawable.ic_favorite)
+                    isFavourite = true
+                }
 
                 //favourite button onClick
                 _favourite.setOnClickListener {
-                    if (favorite)
+                    if (isFavourite) {
                         _favourite.setImageResource(R.drawable.ic_favorite)
-                    else
+                        isFavourite = !isFavourite
+                    } else {
                         _favourite.setImageResource(R.drawable.ic_favorite_selected)
-                    favorite = !favorite
+                        isFavourite = !isFavourite
+                    }
+                    clickListener.onItemCLicked(gym, isFavourite)
                 }
 
-
-                //implement click function
-                itemView.setOnClickListener {
-                    clickListener.onItemCLicked(gym)
-                }
             }
         }
     }
 
     interface OnItemClickedListener {
-        fun onItemCLicked(gym: Gym)
+        fun onItemCLicked(gym: Gym, isFavourite: Boolean)
     }
 
     class DiffUtilCallBack : DiffUtil.ItemCallback<Gym>() {

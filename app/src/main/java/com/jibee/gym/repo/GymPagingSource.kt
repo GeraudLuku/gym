@@ -23,7 +23,7 @@ class GymPagingSource(val application: Application) : PagingSource<Int, Gym>() {
 
             LoadResult.Page(
                 gymList,
-                0,
+                null,
                 0
             )
 

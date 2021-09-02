@@ -1,10 +1,12 @@
 package com.jibee.gym.adapter
 
-import android.content.Context
+import android.content.res.ColorStateList
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageButton
+import android.widget.ImageView
+import androidx.core.content.ContextCompat
+import androidx.core.widget.ImageViewCompat
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -13,7 +15,7 @@ import kotlinx.android.synthetic.main.icon_item.view.*
 
 class IconPAdapter(
     private var clickListener: OnItemClickedListener,
-    private val context: Context
+    private var selectedList: ArrayList<Int>
 ) :
     PagingDataAdapter<Int, IconPAdapter.IconViewHolder>(DiffUtilCallBack()) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): IconViewHolder {
@@ -23,23 +25,60 @@ class IconPAdapter(
 
     override fun onBindViewHolder(holder: IconViewHolder, position: Int) {
         getItem(position)?.let {
-            holder.bindPost(it, clickListener)
+            holder.bindPost(it, clickListener, selectedList)
         }
     }
 
     class IconViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val iconImage: ImageButton = itemView.icon
+        val iconImage: ImageView = itemView.icon
+        var isSelected = false
 
-        fun bindPost(icon: Int, action: OnItemClickedListener) {
-            with(icon) {
+        fun bindPost(icon: Int, action: OnItemClickedListener, selectedList: ArrayList<Int>) {
+            //set icon image
+            iconImage.setImageResource(icon)
 
-                //set icon image
-                iconImage.setImageResource(icon)
+            //check if an item was previously selected
+            if (icon in selectedList) {
+                //set selected to true and change icon drawables
+                iconImage.setBackgroundResource(R.drawable.icon_selected_bg)
+                ImageViewCompat.setImageTintList(
+                    iconImage, ColorStateList.valueOf(
+                        ContextCompat.getColor(iconImage.context, R.color.white)
+                    )
+                )
+                isSelected = true
+            }
 
-                //implement click function
-                itemView.setOnClickListener {
-                    action.onItemCLicked(this)
+            iconImage.setOnClickListener {
+                //change drawable of the icon
+                if (!isSelected) {
+                    //if not selected change the background to selected
+                    it.setBackgroundResource(R.drawable.icon_selected_bg)
+                    ImageViewCompat.setImageTintList(
+                        iconImage, ColorStateList.valueOf(
+                            ContextCompat.getColor(it.context, R.color.white)
+                        )
+                    )
+                    isSelected = !isSelected
+                } else {
+                    //if it was selected change the background to unselected
+                    it.setBackgroundResource(R.drawable.icon_unselected_bg)
+                    ImageViewCompat.setImageTintList(
+                        iconImage, ColorStateList.valueOf(
+                            ContextCompat.getColor(it.context, R.color.primary)
+                        )
+                    )
+                    isSelected = !isSelected
                 }
+
+                action.onItemCLicked(icon, isSelected)
+            }
+
+
+            //implement click function
+            itemView.setOnClickListener {
+
+
             }
         }
     }
@@ -57,7 +96,7 @@ class IconPAdapter(
     }
 
     interface OnItemClickedListener {
-        fun onItemCLicked(icon: Int)
+        fun onItemCLicked(icon: Int, isSelected: Boolean)
     }
 
 }

@@ -1,6 +1,5 @@
 package com.jibee.gym.adapter
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,7 +13,7 @@ import com.jibee.gym.model.PopularClases
 class PopularAdapter(
     private val itemList: List<PopularClases>,
     private var clickListener: OnItemClickedListener,
-    private val context: Context
+    private val favouriteList: ArrayList<String>
 ) :
     RecyclerView.Adapter<PopularAdapter.ViewHolder>() {
 
@@ -48,6 +47,8 @@ class PopularAdapter(
         val popularImage: ImageView = itemView.findViewById(R.id.popular_image)
         val favourite: ImageButton = itemView.findViewById(R.id.favourite)
 
+        var isFavourite = false
+
         //init item click listener
         fun initialize(popularClases: PopularClases, action: OnItemClickedListener, position: Int) {
 
@@ -64,24 +65,26 @@ class PopularAdapter(
             }
 
             //check if its favourite or not
-            if (popularClases.favorite)
+            if (popularClases.title in favouriteList) {
                 favourite.setImageResource(R.drawable.ic_favorite_selected)
-            else
-                favourite.setImageResource(R.drawable.ic_favorite)
+                isFavourite = true
+            }
+
 
             //favourite button onClick
             favourite.setOnClickListener {
-                if (popularClases.favorite)
+                if (isFavourite)
                     favourite.setImageResource(R.drawable.ic_favorite)
                 else
                     favourite.setImageResource(R.drawable.ic_favorite_selected)
 
-                popularClases.favorite = !popularClases.favorite
+                isFavourite = !isFavourite
+                action.onItemCLicked(popularClases, isFavourite)
             }
 
             //implement click function
             itemView.setOnClickListener {
-                action.onItemCLicked(popularClases)
+
             }
 
         }
@@ -89,6 +92,6 @@ class PopularAdapter(
     }
 
     interface OnItemClickedListener {
-        fun onItemCLicked(popularClases: PopularClases)
+        fun onItemCLicked(popularClases: PopularClases, isFavourite: Boolean)
     }
 }

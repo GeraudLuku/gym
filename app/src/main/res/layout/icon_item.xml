@@ -5,12 +5,13 @@
     android:layout_height="wrap_content"
     android:layout_marginEnd="10dp">
 
-    <ImageButton
+    <ImageView
         android:id="@+id/icon"
         android:layout_width="70dp"
         android:layout_height="70dp"
-        app:tint="@drawable/icon_color_selector"
-        android:background="@drawable/icon_selector"
+        android:padding="10dp"
+        app:tint="@color/primary"
+        android:background="@drawable/icon_unselected_bg"
         android:src="@drawable/ic_aerobics"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

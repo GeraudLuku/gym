@@ -20,7 +20,7 @@ class IconPagingSource : PagingSource<Int, Int>() {
 
             LoadResult.Page(
                 iconsList,
-                0,
+                null,
                 0
             )
 
