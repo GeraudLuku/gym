@@ -155,7 +155,7 @@ class MainFragment : Fragment(), PopularAdapter.OnItemClickedListener,
         val json = gson.toJson(selectedIcons)
         editor?.putString(ICON_ID, json)
         editor?.apply()
-        Log.d("DATA", "icon saved")
+        Log.d("DATA", "saved")
 
     }
 
@@ -166,7 +166,7 @@ class MainFragment : Fragment(), PopularAdapter.OnItemClickedListener,
         val json = gson.toJson(selectedFav)
         editor?.putString(FAV_ID, json)
         editor?.apply()
-        Log.d("DATA", "icon saved")
+        Log.d("DATA", "saved")
     }
 
     private fun loadIconData() {

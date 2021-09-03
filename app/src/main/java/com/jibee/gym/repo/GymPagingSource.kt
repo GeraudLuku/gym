@@ -23,7 +23,7 @@ class GymPagingSource(val application: Application) : PagingSource<Int, Gym>() {
 
             LoadResult.Page(
                 gymList,
-                null,
+                null,  //so its finite on the left and scrolls infinite to the right
                 0
             )
 

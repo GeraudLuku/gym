@@ -20,7 +20,7 @@ class IconPagingSource : PagingSource<Int, Int>() {
 
             LoadResult.Page(
                 iconsList,
-                null,
+                null, //so its finite on the left and scrolls infinite to the right
                 0
             )
 
